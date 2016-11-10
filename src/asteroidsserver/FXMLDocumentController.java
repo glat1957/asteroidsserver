@@ -1,8 +1,11 @@
 package asteroidsserver;
 
+import asteroids.Ship;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,6 +17,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
+import asteroids.*;
 
 public class FXMLDocumentController implements Initializable {
     
@@ -27,7 +31,7 @@ public class FXMLDocumentController implements Initializable {
         new Thread(() -> {
             try {
                 // Create a server socket
-                ServerSocket serverSocket = new ServerSocket(80);
+                ServerSocket serverSocket = new ServerSocket(8080);
 
                 while (true) {
                     // Listen for a new connection request
@@ -56,7 +60,8 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
     private Lock lock = new ReentrantLock();
     private String shipImageFileName;
     private int playerNum;
-    
+    private ObjectOutputStream outputObjectToServer;
+    private ObjectInputStream inputObjectFromServer;
     
     
     public HandleAPlayer(Socket socket, int playerNum){
@@ -70,6 +75,8 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
             // Create reading and writing streams
             BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter outputToClient = new PrintWriter(socket.getOutputStream());
+            outputObjectToServer = new ObjectOutputStream(socket.getOutputStream());
+            inputObjectFromServer = new ObjectInputStream(socket.getInputStream());
 
             // Continuously serve the client
             while (true) {
@@ -77,10 +84,12 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                 int request = Integer.parseInt(inputFromClient.readLine());
                 // Process request
                 switch (request) {
-                    case SET_SHIP: {
+                    case GET_SHIP: {
                         lock.lock();
                         shipImageFileName = inputFromClient.readLine();
-                        ship = new Ship(playerNum, shipImageFileName);
+                        ship = new Ship(playerNum, 3, shipImageFileName);
+                        outputObjectToServer.writeObject(ship);
+                        outputObjectToServer.flush();
                         break;
                     }
                 }
