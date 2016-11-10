@@ -1,7 +1,7 @@
 package asteroidsserver;
 
 
-public class Asteriod{
+public class Asteroid{
 
     final int ASTEROID_GENERATION = 5;
     final int ROCKET_ONE_X = 5;
