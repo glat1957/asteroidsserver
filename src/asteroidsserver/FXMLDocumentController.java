@@ -60,9 +60,8 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
     private Lock lock = new ReentrantLock();
     private String shipImageFileName;
     private int playerNum;
-    private ObjectOutputStream outputObjectToServer;
-    private ObjectInputStream inputObjectFromServer;
-    
+    private ObjectOutputStream outputObjectToClient;
+    private ObjectInputStream inputObjectFromClient;
     
     public HandleAPlayer(Socket socket, int playerNum){
         this.socket = socket;
@@ -75,8 +74,8 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
             // Create reading and writing streams
             BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter outputToClient = new PrintWriter(socket.getOutputStream());
-            outputObjectToServer = new ObjectOutputStream(socket.getOutputStream());
-            inputObjectFromServer = new ObjectInputStream(socket.getInputStream());
+            outputObjectToClient = new ObjectOutputStream(socket.getOutputStream());
+            inputObjectFromClient = new ObjectInputStream(socket.getInputStream());
 
             // Continuously serve the client
             while (true) {
@@ -88,8 +87,14 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                         lock.lock();
                         shipImageFileName = inputFromClient.readLine();
                         ship = new Ship(playerNum, 3, shipImageFileName);
-                        outputObjectToServer.writeObject(ship);
-                        outputObjectToServer.flush();
+                        outputObjectToClient.writeObject(ship);
+                        outputObjectToClient.flush();
+                        break;
+                    }
+                    case GET_PLAYERNUM: {
+                        lock.lock();
+                        outputToClient.println(playerNum);
+                        outputToClient.flush();
                         break;
                     }
                 }
