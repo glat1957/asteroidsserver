@@ -1,6 +1,5 @@
 package asteroidsserver;
 
-import asteroids.Ship;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,14 +19,19 @@ import javafx.scene.control.TextArea;
 import asteroids.*;
 
 public class FXMLDocumentController implements Initializable {
-    
+
+    private GameModel gameModel;
     private int playerNum = 0;
     @FXML
     private TextArea textArea;
     
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        // This object is shared between both clients and passed to each thread.
+        gameModel = new GameModel();
+
         new Thread(() -> {
             try {
                 // Create a server socket
@@ -36,40 +40,42 @@ public class FXMLDocumentController implements Initializable {
                 while (true) {
                     // Listen for a new connection request
                     Socket socket = serverSocket.accept();
-                    
+
                     playerNum++;
-                    
+
                     Platform.runLater(() -> {
-                        textArea.appendText("Client connected to server.");
+                        textArea.appendText("Client connected to server. \n");
                     });
-                    
-                 new Thread(new HandleAPlayer(socket, playerNum)).start();
+
+                    new Thread(new HandleAPlayer(socket, playerNum, gameModel)).start();
                 }
             } catch (IOException ex) {
                 System.err.println(ex);
             }
         }).start();
-    }    
-    
+    }
+
 }
 
 class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
-    
-    private Ship ship;
+
+    private GameModel gameModel;
+    private ShipModel playerShip;
     private Socket socket;
     private Lock lock = new ReentrantLock();
     private String shipImageFileName;
     private int playerNum;
     private ObjectOutputStream outputObjectToClient;
     private ObjectInputStream inputObjectFromClient;
-    
-    public HandleAPlayer(Socket socket, int playerNum){
+
+    public HandleAPlayer(Socket socket, int playerNum, GameModel gameModel) {
         this.socket = socket;
         this.playerNum = playerNum;
+        this.gameModel = gameModel;
     }
-    
+
     @Override
-    public void run(){
+    public void run() {
         try {
             // Create reading and writing streams
             BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -83,17 +89,39 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                 int request = Integer.parseInt(inputFromClient.readLine());
                 // Process request
                 switch (request) {
-                    case GET_SHIP: {
+                    case GET_SHIP_MODEL: {
                         lock.lock();
                         shipImageFileName = inputFromClient.readLine();
-                        ship = new Ship(playerNum, 3, shipImageFileName);
-                        outputObjectToClient.writeObject(ship);
+                        playerShip = new ShipModel(playerNum, 3, shipImageFileName);
+                        outputObjectToClient.writeObject(playerShip);
                         outputObjectToClient.flush();
                         break;
                     }
-                    case GET_PLAYERNUM: {
+                    case GET_PLAYER_NUM: {
                         lock.lock();
                         outputToClient.println(playerNum);
+                        outputToClient.flush();
+                        break;
+                    }
+                    case SEND_PLAYER1_ROT: {
+                        lock.lock();
+                        gameModel.setPlayer1Rotation(Double.parseDouble(inputFromClient.readLine()));
+                        break;
+                    }
+                    case SEND_PLAYER2_ROT: {
+                        lock.lock();
+                        gameModel.setPlayer2Rotation(Double.parseDouble(inputFromClient.readLine()));
+                        break;
+                    }
+                    case GET_PLAYER1_ROT: {
+                        lock.lock();
+                        outputToClient.println(gameModel.getPlayer1Rotation());
+                        outputToClient.flush();
+                        break;
+                    }
+                    case GET_PLAYER2_ROT: {
+                        lock.lock();
+                        outputToClient.println(gameModel.getPlayer2Rotation());
                         outputToClient.flush();
                         break;
                     }
