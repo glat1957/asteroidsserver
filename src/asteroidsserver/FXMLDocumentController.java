@@ -42,6 +42,7 @@ public class FXMLDocumentController implements Initializable {
                     Socket socket = serverSocket.accept();
 
                     playerNum++;
+                    gameModel.playerConnected();
 
                     Platform.runLater(() -> {
                         textArea.appendText("Client connected to server. \n");
@@ -122,6 +123,12 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                     case GET_PLAYER2_ROT: {
                         lock.lock();
                         outputToClient.println(gameModel.getPlayer2Rotation());
+                        outputToClient.flush();
+                        break;
+                    }
+                    case NUM_CONNECTED: {
+                        lock.lock();
+                        outputToClient.println(gameModel.getNumConnected());
                         outputToClient.flush();
                         break;
                     }
