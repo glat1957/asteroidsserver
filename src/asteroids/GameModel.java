@@ -6,6 +6,7 @@ package asteroids;
 public class GameModel {
     
     private int connectedPlayers = 0;
+    private int score = 0;
    
     private double player1Rotation = 0.0;
     private double player2Rotation = 0.0;
@@ -39,6 +40,14 @@ public class GameModel {
 
     public double getPlayer2Rotation(){
         return player2Rotation;
+    }
+    
+    public int getScore(){
+        return score;
+    }
+    
+    public void incrementScore(){
+        score++;
     }
     
 }
