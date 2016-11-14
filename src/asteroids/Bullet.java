@@ -9,7 +9,6 @@ import asteroids.*;
 public class Bullet implements Serializable {
     
     private Ray r;
-    private Circle c;
     
     public Bullet(int startX,int startY,int dX,int dY){
         Vector v = new Vector(dX,dY);
@@ -32,17 +31,6 @@ public class Bullet implements Serializable {
         r = new Ray(r.endPoint(time),r.v,r.speed);
     }
     
-    public Shape getShape()
-    {
-        c = new Circle(r.origin.x,r.origin.y,4);
-        c.setFill(Color.RED);
-        return c;
-    }
-    
-    public void updateShape()
-    {
-        c.setCenterX(r.origin.x);
-        c.setCenterY(r.origin.y);
-    }
+   
 }
 
