@@ -8,7 +8,7 @@ public class Bullet {
     private int bulletRadius;
     private Ray r;
 
-    public Bullet(int startX, int startY, int radius, int dX, int dY) {
+    public Bullet(double startX, double startY, int radius, int dX, int dY) {
         this.bulletCenter.x = startX;
         this.bulletCenter.y = startY;
         this.bulletRadius = radius;

@@ -9,7 +9,7 @@ public class Asteroid {
     private int asteroidRadius;
     private Ray directionRay;
 
-    public void Asteroid(int x, int y, int radius, int dX, int dY) {
+    public void Asteroid(double x, double y, int radius, int dX, int dY) {
         this.asteroidRadius = radius;
 
         Vector velocity = new Vector(dX, dY);
@@ -17,7 +17,7 @@ public class Asteroid {
         directionRay = new Ray(new Point(x, y), velocity, speed);
     }
 
-    public boolean isHit(Point bulletCenter, int bulletRadius) {
+    /*public boolean isHit(Point bulletCenter, int bulletRadius) {
         // Since asteroids and bullets are going to be represented using circles,
         // we can use the origin point and radius of each and the distance formula
         // to determine if they overlap.
@@ -31,7 +31,7 @@ public class Asteroid {
         } else {
             return true;
         }
-    }
+    }*/
     
     public void move(double time) {
         directionRay = new Ray(directionRay.endPoint(time), directionRay.v, directionRay.speed);
