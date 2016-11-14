@@ -1,38 +1,42 @@
 package asteroidsserver;
 
 import java.util.Random;
+import javafx.scene.shape.Circle;
 
 public class Asteroid {
-
-    final int ASTEROID_GENERATION = 5;
-    final int ROCKET_ONE_X = 5;
-    final int ROCKET_ONE_Y = 5;
-    final int ROCKET_TWO_X = 5;
-    final int ROCKET_TWO_Y = 5;
-    int velocity;
-    int xPosition;
-    int yPosition;
-    int intercept;
-    int slope;
+    
+    private int radius;
+    
+    private int ROCKET_ONE_X;
+    private int ROCKET_ONE_Y;
+    private int ROCKET_TWO_X;
+    private int ROCKET_TWO_Y;
+    
+    private int dX;
+    private int dY;
+    private int asteroidX;
+    private int asteroidY;
+    private int intercept;
+    private int slope;
    
 
     Bullet newBullet = new Bullet();
     Random r = new Random();
 
     public boolean isHit() {
-        if (returnX() == newBullet.returnBulletX() && returnY() == newBullet.returnBulletY()) {
+        if (asteroidX == newBullet.returnBulletX() && asteroidY == newBullet.returnBulletY()) {
             return true;
         } else {
             return false;
         }
     }
 
-    public int returnX() {
-        return xPosition;
+    public int getAsteroidX() {
+        return asteroidX;
     }
 
-    public int returnY() {
-        return yPosition;
+    public int getAsteroidY() {
+        return asteroidY;
     }
 
     public void generateAsteroidEquation(){
