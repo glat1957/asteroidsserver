@@ -12,17 +12,12 @@ public class Bullet {
         this.bulletCenter.x = startX;
         this.bulletCenter.y = startY;
         this.bulletRadius = radius;
-        
-        
+
         Vector v = new Vector(dX, dY);
         double speed = v.length();
         r = new Ray(new Point(startX, startY), v, speed);
     }
-    
-    public Point getBulletCenter(){
-        return bulletCenter;
-    }
-    
+
     public Ray getRay() {
         return r;
     }
@@ -33,10 +28,6 @@ public class Bullet {
 
     public void move(double time) {
         r = new Ray(r.endPoint(time), r.v, r.speed);
-    }
-    
-    public void updateBulletCenter(){
-        // Halp!
     }
 
 }
