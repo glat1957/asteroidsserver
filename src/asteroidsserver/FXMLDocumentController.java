@@ -41,6 +41,7 @@ public class FXMLDocumentController implements Initializable {
                     // Listen for a new connection request
                     Socket socket = serverSocket.accept();
 
+                    // Increment player number and number of people connected.
                     playerNum++;
                     gameModel.playerConnected();
 
@@ -130,6 +131,11 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                         lock.lock();
                         outputToClient.println(gameModel.getNumConnected());
                         outputToClient.flush();
+                        break;
+                    }
+                    case DISCONNECT_PLAYER: {
+                        lock.lock();
+                        gameModel.playerDisconnected();
                         break;
                     }
                 }

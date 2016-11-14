@@ -17,7 +17,7 @@ public class GameModel {
         connectedPlayers++;
     }
     
-    public void playerDisconnted(){
+    public void playerDisconnected(){
         connectedPlayers--;
     }
     
