@@ -29,7 +29,7 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        // This object is shared between both clients and passed to each thread.
+        // This object is shared between both players and passed to each thread.
         gameModel = new GameModel();
 
         new Thread(() -> {

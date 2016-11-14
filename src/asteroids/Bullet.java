@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
-import asteroids.*;
+import physics.*;
 
 public class Bullet implements Serializable {
     

@@ -1,38 +1,55 @@
 package asteroids;
 
-import java.util.Random;
+import physics.*;
 
 public class Asteroid {
 
-    final int ASTEROID_GENERATION = 5;
-    final int ROCKET_ONE_X = 5;
-    final int ROCKET_ONE_Y = 5;
-    final int ROCKET_TWO_X = 5;
-    final int ROCKET_TWO_Y = 5;
-    int velocity;
-    int xPosition;
-    int yPosition;
-    int intercept;
-    int slope;
-   
+    private int dX;
+    private int dY;
+    private Point asteroidCenter;
+    private int asteroidRadius;
+    private Ray ray;
 
-    
-    Random r = new Random();
+    public void Asteroid(int x, int y, int radius, int dX, int dY) {
+        this.asteroidCenter.x = x;
+        this.asteroidCenter.y = y;
+        this.asteroidRadius = radius;
 
-    public boolean isHit() {
-        return true;
+        Vector velocity = new Vector(dX, dY);
+        double speed = velocity.length();
+        ray = new Ray(new Point(x, y), velocity, speed);
     }
 
-    public int returnX() {
-        return xPosition;
+    public boolean isHit(Point bulletCenter, int bulletRadius) {
+        // Since asteroids and bullets are going to be represented using circles,
+        // we can use the origin point and radius of each and the distance formula
+        // to determine if they overlap.
+        double distance = Math.pow((asteroidCenter.x - bulletCenter.x) * (asteroidCenter.x - bulletCenter.x)
+                + (asteroidCenter.y - bulletCenter.y) * (asteroidCenter.y - bulletCenter.y), 0.5);
+
+        if (distance < asteroidRadius + bulletRadius) {
+            return true;
+        } else if (distance > asteroidRadius + bulletRadius) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    public int returnY() {
-        return yPosition;
+    public Point getAsteroidCenter() {
+        return asteroidCenter;
     }
 
-    public void generateAsteroidEquation(){
-        intercept = r.nextInt(20); //What should the bounds be?
-        slope = r.nextInt(20);   
+    public void moveAsteroid(int dy, int dx) {
+        this.asteroidCenter.x += dx;
+        this.asteroidCenter.y += dy;
+    }
+
+    public Ray getRay() {
+        return ray;
+    }
+
+    public void setRay(Ray ray) {
+        this.ray = ray;
     }
 }

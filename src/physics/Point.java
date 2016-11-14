@@ -1,4 +1,6 @@
-package asteroids;
+package physics;
+
+import asteroids.*;
 
 public class Point {
     public double x;
