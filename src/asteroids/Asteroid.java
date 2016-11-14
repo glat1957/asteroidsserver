@@ -1,4 +1,4 @@
-package asteroidsserver;
+package asteroids;
 
 import java.util.Random;
 
@@ -16,15 +16,11 @@ public class Asteroid {
     int slope;
    
 
-    Bullet newBullet = new Bullet();
+    
     Random r = new Random();
 
     public boolean isHit() {
-        if (returnX() == newBullet.returnBulletX() && returnY() == newBullet.returnBulletY()) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
     public int returnX() {
