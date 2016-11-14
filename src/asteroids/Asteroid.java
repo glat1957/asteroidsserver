@@ -3,43 +3,36 @@ package asteroids;
 import java.util.Random;
 
 public class Asteroid {
-    
-    private int radius;
-    
-    private int ROCKET_ONE_X;
-    private int ROCKET_ONE_Y;
-    private int ROCKET_TWO_X;
-    private int ROCKET_TWO_Y;
-    
-    private int dX;
-    private int dY;
-    private int asteroidX;
-    private int asteroidY;
-    private int intercept;
-    private int slope;
+
+    final int ASTEROID_GENERATION = 5;
+    final int ROCKET_ONE_X = 5;
+    final int ROCKET_ONE_Y = 5;
+    final int ROCKET_TWO_X = 5;
+    final int ROCKET_TWO_Y = 5;
+    int velocity;
+    int xPosition;
+    int yPosition;
+    int intercept;
+    int slope;
    
 
-    //Bullet newBullet = new Bullet();
-    //Random r = new Random();
+    
+    Random r = new Random();
 
-    /*public boolean isHit() {
-        if (asteroidX == newBullet.returnBulletX() && asteroidY == newBullet.returnBulletY()) {
-            return true;
-        } else {
-            return false;
-        }
-    }*/
-
-    public int getAsteroidX() {
-        return asteroidX;
+    public boolean isHit() {
+        return true;
     }
 
-    public int getAsteroidY() {
-        return asteroidY;
+    public int returnX() {
+        return xPosition;
+    }
+
+    public int returnY() {
+        return yPosition;
     }
 
     public void generateAsteroidEquation(){
-        //intercept = r.nextInt(20); //What should the bounds be?
-        //slope = r.nextInt(20);   
+        intercept = r.nextInt(20); //What should the bounds be?
+        slope = r.nextInt(20);   
     }
 }
