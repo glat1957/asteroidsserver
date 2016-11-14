@@ -35,12 +35,8 @@ public class Asteroid {
         return yPosition;
     }
 
-    
-    public void generateAsteroid(){
+    public void generateAsteroidEquation(){
         intercept = r.nextInt(20); //What should the bounds be?
-        slope = r.nextInt(20);
-        velocity = r.nextInt(10);
-         
-        
+        slope = r.nextInt(20);   
     }
 }
