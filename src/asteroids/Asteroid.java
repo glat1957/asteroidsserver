@@ -1,7 +1,6 @@
-package asteroidsserver;
+package asteroids;
 
 import java.util.Random;
-import javafx.scene.shape.Circle;
 
 public class Asteroid {
     
@@ -20,16 +19,16 @@ public class Asteroid {
     private int slope;
    
 
-    Bullet newBullet = new Bullet();
-    Random r = new Random();
+    //Bullet newBullet = new Bullet();
+    //Random r = new Random();
 
-    public boolean isHit() {
+    /*public boolean isHit() {
         if (asteroidX == newBullet.returnBulletX() && asteroidY == newBullet.returnBulletY()) {
             return true;
         } else {
             return false;
         }
-    }
+    }*/
 
     public int getAsteroidX() {
         return asteroidX;
@@ -40,7 +39,7 @@ public class Asteroid {
     }
 
     public void generateAsteroidEquation(){
-        intercept = r.nextInt(20); //What should the bounds be?
-        slope = r.nextInt(20);   
+        //intercept = r.nextInt(20); //What should the bounds be?
+        //slope = r.nextInt(20);   
     }
 }
