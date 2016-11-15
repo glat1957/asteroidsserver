@@ -138,6 +138,29 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                         gameModel.playerDisconnected();
                         break;
                     }
+                    case GET_ASTEROID: {
+                        /// LOGIC
+                        break;
+                    }
+                    case SEND_ASTEROID: {
+                        /// LOGIC
+                        break;
+                    }
+                    case GET_PLAYER1_BULLET: {
+                        /// LOGIC
+                        break;
+                    }
+                    case SEND_PLAYER1_BULLET: {
+                        /// LOGIC
+                        break;
+                    }case GET_PLAYER2_BULLET: {
+                        /// LOGIC
+                        break;
+                    }
+                    case SEND_PLAYER2_BULLET: {
+                        /// LOGIC
+                        break;
+                    }
                 }
             }
         } catch (IOException ex) {
