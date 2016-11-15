@@ -17,6 +17,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import asteroids.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class FXMLDocumentController implements Initializable {
 
@@ -24,11 +27,10 @@ public class FXMLDocumentController implements Initializable {
     private int playerNum = 0;
     @FXML
     private TextArea textArea;
-    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         // This object is shared between both players and passed to each thread.
         gameModel = new GameModel();
 
@@ -153,7 +155,8 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                     case SEND_PLAYER1_BULLET: {
                         /// LOGIC
                         break;
-                    }case GET_PLAYER2_BULLET: {
+                    }
+                    case GET_PLAYER2_BULLET: {
                         /// LOGIC
                         break;
                     }
@@ -167,6 +170,42 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
             ex.printStackTrace();
         } finally {
             lock.unlock();
+        }
+    }
+}
+
+class GenerateAsteroid implements Runnable, asteroids.AsteroidsConstants {
+
+    private GameModel gameModel;
+    private Socket socket;
+    private Lock lock = new ReentrantLock();
+    private ObjectOutputStream outputObjectToClient;
+    private ObjectInputStream inputObjectFromClient;
+
+    public GenerateAsteroid(Socket socket, GameModel gameModel) {
+        this.socket = socket;
+        this.gameModel = gameModel;
+    }
+
+    @Override
+    public void run() {
+        try {
+            outputObjectToClient = new ObjectOutputStream(socket.getOutputStream());
+            while (true) {
+                gameModel.setAsteroid();
+                outputObjectToClient.writeObject(gameModel.asteroidsInScene);
+                outputObjectToClient.flush();
+                
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException ex) {
+                    //Nothing to see here folks
+                }
+
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+
         }
     }
 }

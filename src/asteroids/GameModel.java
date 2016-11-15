@@ -1,15 +1,22 @@
 package asteroids;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 // All data that needs to be shared between the two clients exists in this class
 // of which there is only ONE instance.
 
 public class GameModel {
     
+    Asteroid temp = null;
     private int connectedPlayers = 0;
     private int score = 0;
    
     private double player1Rotation = 0.0;
     private double player2Rotation = 0.0;
+    
+    public List<Asteroid> asteroidsInScene = Collections.synchronizedList(new ArrayList<>());
     
     public void GameModel(){
     }
@@ -48,6 +55,11 @@ public class GameModel {
     
     public void incrementScore(){
         score++;
+    }
+    
+    public void setAsteroid(){
+        temp = new Asteroid();
+        asteroidsInScene.add(temp);
     }
     
 }
