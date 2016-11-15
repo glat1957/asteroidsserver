@@ -1,20 +1,30 @@
 package asteroids;
 
 import physics.*;
+import java.util.Random;
 
 public class Asteroid {
 
+    Random random = new Random();
     private int dX;
     private int dY;
     private int asteroidRadius;
     private Ray directionRay;
+    Asteroid temp = null;
 
-    public Asteroid(double x, double y, int radius, int dX, int dY) {
+    public Asteroid() {
+        int x = random.nextInt(20) + 1;
+        int y = random.nextInt(20) + 1;
+        int radius = 15;
+        int dX = random.nextInt(20) + 1;
+        int dY = random.nextInt(20) + 1;
+
         this.asteroidRadius = radius;
 
         Vector velocity = new Vector(dX, dY);
         double speed = velocity.length();
         directionRay = new Ray(new Point(x, y), velocity, speed);
+
     }
 
     public boolean isHit(Point bulletCenter, int bulletRadius) {
@@ -32,7 +42,7 @@ public class Asteroid {
             return true;
         }
     }
-    
+
     public void move(double time) {
         directionRay = new Ray(directionRay.endPoint(time), directionRay.v, directionRay.speed);
     }
@@ -44,4 +54,5 @@ public class Asteroid {
     public void setRay(Ray ray) {
         this.directionRay = ray;
     }
+
 }
