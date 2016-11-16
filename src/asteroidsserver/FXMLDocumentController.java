@@ -72,7 +72,7 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
     public HandleAPlayer(Socket socket, int playerNum, GameModel gameModel) {
         this.socket = socket;
         this.playerNum = playerNum;
-        this.gameModel = gameModel;   
+        this.gameModel = gameModel;
     }
 
     @Override
@@ -84,9 +84,9 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
             outputObjectToClient = new ObjectOutputStream(socket.getOutputStream());
             inputObjectFromClient = new ObjectInputStream(socket.getInputStream());
 
-            // Continuously serve the client
+            // Continuously serve the player
             while (true) {
-                // Receive request code from the client
+                // Receive request code from the player
                 int request = Integer.parseInt(inputFromClient.readLine());
                 // Process request
                 switch (request) {
@@ -135,30 +135,6 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                     case DISCONNECT_PLAYER: {
                         lock.lock();
                         gameModel.playerDisconnected();
-                        break;
-                    }
-                    case GET_ASTEROID: {
-                        /// LOGIC
-                        break;
-                    }
-                    case SEND_ASTEROID: {
-                        /// LOGIC
-                        break;
-                    }
-                    case GET_PLAYER1_BULLET: {
-                        /// LOGIC
-                        break;
-                }
-                    case SEND_PLAYER1_BULLET: {
-                        /// LOGIC
-                        break;
-            }
-                    case GET_PLAYER2_BULLET: {
-                        /// LOGIC
-                        break;
-                    }
-                    case SEND_PLAYER2_BULLET: {
-                        /// LOGIC
                         break;
                     }
                 }
