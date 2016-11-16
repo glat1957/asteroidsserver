@@ -72,7 +72,7 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
     public HandleAPlayer(Socket socket, int playerNum, GameModel gameModel) {
         this.socket = socket;
         this.playerNum = playerNum;
-        this.gameModel = gameModel;
+        this.gameModel = gameModel;   
     }
 
     @Override
@@ -148,11 +148,11 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                     case GET_PLAYER1_BULLET: {
                         /// LOGIC
                         break;
-                    }
+                }
                     case SEND_PLAYER1_BULLET: {
                         /// LOGIC
                         break;
-                    }
+            }
                     case GET_PLAYER2_BULLET: {
                         /// LOGIC
                         break;
