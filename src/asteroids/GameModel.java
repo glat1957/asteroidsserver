@@ -16,7 +16,9 @@ public class GameModel {
     private double player1Rotation = 0.0;
     private double player2Rotation = 0.0;
     
-    public List<Asteroid> asteroidsInScene = Collections.synchronizedList(new ArrayList<>());
+    private List<Asteroid> asteroidsInScene = Collections.synchronizedList(new ArrayList<>());
+    private List<Bullet> player1Bullets = Collections.synchronizedList(new ArrayList<>());
+    private List<Bullet> player2Bullets = Collections.synchronizedList(new ArrayList<>());
     
     public void GameModel(){
     }
