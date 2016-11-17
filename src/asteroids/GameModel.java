@@ -16,6 +16,9 @@ public class GameModel {
     private double player1Rotation = 0.0;
     private double player2Rotation = 0.0;
     
+    private int player1Lives = 3;
+    private int player2Lives = 3;
+    
     private List<Asteroid> asteroidsInScene = Collections.synchronizedList(new ArrayList<>());
     private List<Bullet> player1Bullets = Collections.synchronizedList(new ArrayList<>());
     private List<Bullet> player2Bullets = Collections.synchronizedList(new ArrayList<>());
@@ -59,9 +62,19 @@ public class GameModel {
         score++;
     }
     
-    public void setAsteroid(){
-        temp = new Asteroid();
-        asteroidsInScene.add(temp);
+    public void setPlayer1Lives(int player1Lives){
+        this.player1Lives = player1Lives;
     }
     
+    public void setPlayer2Lives(int player2Lives){
+        this.player2Lives = player2Lives;
+    }
+    
+    public int getPlayer1Lives(){
+        return player1Lives;
+    }
+    
+    public int getPlayer2Lives(){
+        return player2Lives;
+    }
 }

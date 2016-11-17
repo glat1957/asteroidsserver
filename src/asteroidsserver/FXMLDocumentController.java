@@ -17,10 +17,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import asteroids.*;
+import java.util.List;
 
 public class FXMLDocumentController implements Initializable {
 
     private GameModel gameModel;
+    private Simulation sim;
     private int playerNum = 0;
     @FXML
     private TextArea textArea;
@@ -28,15 +30,16 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // This object is shared between both players and passed to each thread.
+        // These objects are shared between both players and passed to each thread.
         gameModel = new GameModel();
-
+        sim = new Simulation();
+        
         new Thread(() -> {
             try {
                 // Create a server socket
                 ServerSocket serverSocket = new ServerSocket(8080);
 
-                while (true) {
+                while (playerNum < 2) {
                     // Listen for a new connection request
                     Socket socket = serverSocket.accept();
 
@@ -45,15 +48,19 @@ public class FXMLDocumentController implements Initializable {
                     gameModel.playerConnected();
 
                     Platform.runLater(() -> {
-                        textArea.appendText("Client connected to server. \n");
+                        textArea.appendText("Player connected to server. \n");
                     });
 
-                    new Thread(new HandleAPlayer(socket, playerNum, gameModel)).start();
+                    new Thread(new HandleAPlayer(socket, playerNum, gameModel, sim)).start();
                 }
+                
+                new Thread(new Simulate(sim)).start();
             } catch (IOException ex) {
                 System.err.println(ex);
             }
         }).start();
+        
+        
     }
 
 }
@@ -61,6 +68,7 @@ public class FXMLDocumentController implements Initializable {
 class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
 
     private GameModel gameModel;
+    private Simulation sim;
     private ShipModel playerShip;
     private Socket socket;
     private Lock lock = new ReentrantLock();
@@ -69,10 +77,11 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
     private ObjectOutputStream outputObjectToClient;
     private ObjectInputStream inputObjectFromClient;
 
-    public HandleAPlayer(Socket socket, int playerNum, GameModel gameModel) {
+    public HandleAPlayer(Socket socket, int playerNum, GameModel gameModel, Simulation sim) {
         this.socket = socket;
         this.playerNum = playerNum;
         this.gameModel = gameModel;
+        this.sim = sim;
     }
 
     @Override
@@ -93,7 +102,7 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                     case GET_SHIP_MODEL: {
                         lock.lock();
                         shipImageFileName = inputFromClient.readLine();
-                        playerShip = new ShipModel(playerNum, 3, shipImageFileName);
+                        playerShip = new ShipModel(playerNum, shipImageFileName);
                         outputObjectToClient.writeObject(playerShip);
                         outputObjectToClient.flush();
                         break;
@@ -104,12 +113,12 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                         outputToClient.flush();
                         break;
                     }
-                    case SEND_PLAYER1_ROT: {
+                    case SET_PLAYER1_ROT: {
                         lock.lock();
                         gameModel.setPlayer1Rotation(Double.parseDouble(inputFromClient.readLine()));
                         break;
                     }
-                    case SEND_PLAYER2_ROT: {
+                    case SET_PLAYER2_ROT: {
                         lock.lock();
                         gameModel.setPlayer2Rotation(Double.parseDouble(inputFromClient.readLine()));
                         break;
@@ -137,9 +146,99 @@ class HandleAPlayer implements Runnable, asteroids.AsteroidsConstants {
                         gameModel.playerDisconnected();
                         break;
                     }
+                    case INC_SCORE: {
+                        lock.lock();
+                        gameModel.incrementScore();
+                        break;
+                    }
+                    case GET_SCORE: {
+                        lock.lock();
+                        outputToClient.println(gameModel.getScore());
+                        outputToClient.flush();
+                        break;
+                    }
+                    case SET_PLAYER1_LIVES: {
+                        lock.lock();
+                        gameModel.setPlayer1Lives(Integer.parseInt(inputFromClient.readLine()));
+                        break;
+                    }
+                    case SET_PLAYER2_LIVES: {
+                        lock.lock();
+                        gameModel.setPlayer2Lives(Integer.parseInt(inputFromClient.readLine()));
+                        break;
+                    }
+                    case GET_PLAYER1_LIVES: {
+                        lock.lock();
+                        outputToClient.println(gameModel.getPlayer1Lives());
+                        outputToClient.flush();
+                        break;
+                    }
+                    case GET_PLAYER2_LIVES: {
+                        lock.lock();
+                        outputToClient.println(gameModel.getPlayer2Lives());
+                        outputToClient.flush();
+                        break;
+                    }
+                    case PLAYER_NEW_BULLET: {
+                        lock.lock();
+                        double x = Double.parseDouble(inputFromClient.readLine());
+                        double y = Double.parseDouble(inputFromClient.readLine());
+                        double rotation = Double.parseDouble(inputFromClient.readLine());
+                        sim.playerAddBullet(x, y, rotation);
+                        break;
+                    }
+                    case PLAYER_GET_BULLETS: {
+                        lock.lock();
+                        outputToClient.println(sim.getPlayerBullets().size());
+                        outputToClient.flush();
+                        
+                        for(int i = 0; i < sim.getPlayerBullets().size(); i++){
+                            outputObjectToClient.writeObject(sim.getPlayerBullets().get(i));
+                        }
+                        outputObjectToClient.flush();
+                        //outputObjectToClient.writeObject(sim.getPlayerBullets());
+                        //outputObjectToClient.flush();
+                        System.out.println("Sent list of length: " + sim.getPlayerBullets().size());
+                        break;
+                    }
                 }
             }
         } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+// Thread to simulate movement of asteroids and bullets.
+class Simulate implements Runnable, asteroids.AsteroidsConstants {
+
+    private final Lock lock = new ReentrantLock();
+    private final Simulation sim;
+    private List<Bullet> playerBulletsInScene;
+    //private List<Asteroid> asteroidsInScene;
+
+    public Simulate(Simulation sim) {
+        this.sim = sim;
+        this.playerBulletsInScene = sim.getPlayerBullets();
+        //this.asteroidsInScene = asteroidsInScene;
+    }
+
+    @Override
+    public void run() {
+        try {
+            lock.lock();
+            while (true) {
+                
+                sim.evolve(1.0);
+                
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                }
+            }
+        } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             lock.unlock();

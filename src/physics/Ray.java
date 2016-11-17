@@ -1,8 +1,9 @@
 package physics;
 
-import asteroids.*;
+import java.io.Serializable;
 
-public class Ray {
+
+public class Ray implements Serializable{
   public Point origin;
   public Vector v;
   public double speed;
