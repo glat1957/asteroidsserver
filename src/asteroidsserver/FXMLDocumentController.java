@@ -39,7 +39,7 @@ public class FXMLDocumentController implements Initializable {
         new Thread(() -> {
             try {
                 // Create a server socket
-                ServerSocket serverSocket = new ServerSocket(8080);
+                ServerSocket serverSocket = new ServerSocket(8000);
 
                 while (playerNum < 2) {
                     // Listen for a new connection request
@@ -57,7 +57,7 @@ public class FXMLDocumentController implements Initializable {
                 }
 
                 new Thread(new Simulate(sim, gameModel)).start();
-                new Thread(new GenerateAsteroids(sim)).start();
+                new Thread(new GenerateAsteroids(sim, gameModel)).start();
             } catch (IOException ex) {
                 System.err.println(ex);
             }
@@ -215,16 +215,18 @@ class GenerateAsteroids implements Runnable, asteroids.AsteroidsConstants {
 
     private final Simulation sim;
     private List<Asteroid> asteroidsInScene;
+    private GameModel gameModel;
 
-    public GenerateAsteroids(Simulation sim) {
+    public GenerateAsteroids(Simulation sim, GameModel gameModel) {
         this.sim = sim;
         this.asteroidsInScene = sim.getAsteroids();
+        this.gameModel = gameModel;
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
+            while (gameModel.getPlayer1Lives() != 0 && gameModel.getPlayer2Lives() != 0) {
                 synchronized (asteroidsInScene) {
                     for(int i = 2+(int)(Math.random()*6); i>0; i--)
                         asteroidsInScene.add(new Asteroid());
@@ -262,7 +264,7 @@ class Simulate implements Runnable, asteroids.AsteroidsConstants {
     public void run() {
         try {
             lock.lock();
-            while (!(gameModel.getPlayer1Lives() == 0) || !(gameModel.getPlayer2Lives() == 0)) {
+            while (gameModel.getPlayer1Lives() != 0 && gameModel.getPlayer2Lives() != 0) {
 
                 synchronized (playerBulletsInScene) {
                     synchronized (playerAsteroidsInScene) {
