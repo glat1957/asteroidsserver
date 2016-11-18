@@ -43,7 +43,7 @@ public class Asteroid {
         asteroidRadius = 5 + random.nextInt(10);
 
         Vector velocity = new Vector(Math.cos(angle), Math.sin(angle));
-        double speed = 6 + random.nextDouble() * 6;
+        double speed = 4 + random.nextDouble() * 6;
         directionRay = new Ray(new Point(x, y), velocity, speed);
     }
     

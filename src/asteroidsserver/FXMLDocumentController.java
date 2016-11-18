@@ -228,11 +228,11 @@ class GenerateAsteroids implements Runnable, asteroids.AsteroidsConstants {
         try {
             while (gameModel.getPlayer1Lives() != 0 && gameModel.getPlayer2Lives() != 0) {
                 synchronized (asteroidsInScene) {
-                    for(int i = 2+(int)(Math.random()*6); i>0; i--)
+                    for(int i = 1+(int)(Math.random()*6); i>0; i--)
                         asteroidsInScene.add(new Asteroid());
                 }
                 try {
-                    Thread.sleep(300 + (int)(Math.random() * 1700));
+                    Thread.sleep(500 + (int)(Math.random() * 1700));
                 } catch (InterruptedException ex) {
                 }
             }
